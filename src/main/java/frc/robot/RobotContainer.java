@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Aim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
@@ -40,12 +42,14 @@ public class RobotContainer {
   private void configureBindings() {
 
     Aim aim = new Aim();
+    Shooter shooter = new Shooter();
+    Intake intake = new Intake();
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
         drive.withVelocityX(
-          MathUtil.applyDeadband(DriverController.getLeftY(), 0.15) * MaxSpeed) // Drive forward with negative Y (forward)
-             .withVelocityY(MathUtil.applyDeadband(DriverController.getLeftX(), 0.15) * MaxSpeed) // Drive left with negative X (left)
+          MathUtil.applyDeadband(-DriverController.getLeftY(), 0.15) * MaxSpeed) // Drive forward with negative Y (forward)
+             .withVelocityY(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.15) * MaxSpeed) // Drive left with negative X (left)
              .withRotationalRate(-DriverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
@@ -58,6 +62,18 @@ public class RobotContainer {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    DriverController.leftTrigger().whileTrue(aim.runEnd(
+      () -> shooter.shoot(.6),
+      () -> shooter.shootStop()));
+
+    DriverController.leftBumper().whileTrue(intake.runEnd(
+      () -> intake.intakeFront(),
+      () -> intake.intakeStop()));
+
+    DriverController.rightBumper().whileTrue(intake.runEnd(
+      () -> intake.intakeBack(),
+      () -> intake.intakeStop()));
 
     DriverController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));

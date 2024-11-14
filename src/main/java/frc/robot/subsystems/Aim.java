@@ -20,7 +20,7 @@ public class Aim extends SubsystemBase {
 
   private TalonFX aim = new TalonFX(Constants.AimID);
   private DutyCycleEncoder aimEncoder = new DutyCycleEncoder(Constants.revEncoderDIOPort); 
-  private PIDController aimController = new PIDController(0.2, 0.00, 0.00);
+  private PIDController aimController = new PIDController(0.4, 0.00, 0.00);
 
   private TalonFXConfiguration cfg = new TalonFXConfiguration();
 
@@ -56,11 +56,11 @@ public class Aim extends SubsystemBase {
   }
 
   public void aimUp(double speedPercent) {
-    aimSetpoint = aimSetpoint - (speedPercent * 0.1);
+    aimSetpoint = aimSetpoint - (speedPercent * 0.15);
   }
 
   public void aimDown(double speedPercent) {
-    aimSetpoint = aimSetpoint + (speedPercent * 0.1);
+    aimSetpoint = aimSetpoint + (speedPercent * 0.15);
   }
 
   public void aimStop() {
