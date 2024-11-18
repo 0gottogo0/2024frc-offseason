@@ -20,11 +20,12 @@ public class Aim extends SubsystemBase {
 
   private TalonFX aim = new TalonFX(Constants.AimID);
   private DutyCycleEncoder aimEncoder = new DutyCycleEncoder(Constants.revEncoderDIOPort); 
-  private PIDController aimController = new PIDController(0.4, 0.00, 0.00);
+  private PIDController aimController = new PIDController(0.2, 0.00, 0.00);
 
   private TalonFXConfiguration cfg = new TalonFXConfiguration();
 
   private double aimSetpoint = getAimAngleDeg();
+  private boolean manualAim = false;
 
   /** Creates a new Aim. */
   public Aim() {
@@ -51,20 +52,33 @@ public class Aim extends SubsystemBase {
     // This method will be called once per scheduler run
 
     double pid = aimController.calculate(getAimAngleDeg(), aimSetpoint);
-    pid = MathUtil.clamp(MathUtil.applyDeadband(pid, 0.05), -1, 1);
-    aim.set(-pid);
+    pid = MathUtil.clamp(MathUtil.applyDeadband(pid, 0.2), -1, 1);
+    if (manualAim) {
+      // diable pid
+    } else {
+      aim.set(-pid);
+    }
+
+    System.out.println(manualAim);
+    System.out.println(pid);
+    System.out.println(aimSetpoint);
+    System.out.println(getAimAngleDeg());
+    System.out.println("============");
   }
 
   public void aimUp(double speedPercent) {
-    aimSetpoint = aimSetpoint - (speedPercent * 0.15);
+    aim.set(-speedPercent);
+    manualAim = true;
   }
 
   public void aimDown(double speedPercent) {
-    aimSetpoint = aimSetpoint + (speedPercent * 0.15);
+    aim.set(speedPercent);
+    manualAim = true;
   }
 
   public void aimStop() {
     aimSetpoint = getAimAngleDeg();
+    manualAim = false;
   }
 
   public double getAimAngleDeg() {

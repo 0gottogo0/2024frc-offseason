@@ -4,35 +4,63 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-
   private TalonFX intakeTop = new TalonFX(Constants.intakeTopID);
-  //private TalonSRX intakeBottom = new TalonSRX(Constants.intakeBottomID);
+  private TalonSRX intakeBottom = new TalonSRX(Constants.intakeBottomID);
 
-  private TalonFXConfiguration cfg = new TalonFXConfiguration();
+ 
+
+  //private CANSparkMax intakeTopBack = new CANSparkMax(Constants.intakeTopBackID, MotorType.kBrushless);
+
+  /*private DoubleSolenoid backIntakeArms = new DoubleSolenoid(PneumaticsModuleType.REVPH, 
+    Constants.backIntakeArmsForwardID, Constants.backIntakeArmsBackwardID);*/
+
+    private TalonFXConfiguration cfg = new TalonFXConfiguration();
 
   /** Creates a new Intake. */
   public Intake() {
 
-    cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    
+    intakeTop.getConfigurator().apply(cfg);
+    intakeBottom.configFactoryDefault();
+
+    intakeTop.setInverted(true);
+    intakeBottom.setInverted(true);
+
+    intakeTop.setNeutralMode(NeutralModeValue.Coast);
 
     intakeTop.clearStickyFaults();
-    intakeTop.getConfigurator().apply(cfg);
+    intakeBottom.clearStickyFaults();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+  }
+
+  public void intakeBack() {
+    intakeTop.set(0.6);
+    intakeBottom.set(ControlMode.PercentOutput, 0.6);
+  }
+
+  public void intakeFront() {
+    intakeTop.set(0.6);
+    intakeBottom.set(ControlMode.PercentOutput, -0.6);
+  }
+
+  public void intakeStop() {
+    intakeTop.set(0);
+    intakeBottom.set(ControlMode.PercentOutput, 0);
   }
 }
