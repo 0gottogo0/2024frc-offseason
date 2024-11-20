@@ -16,13 +16,15 @@ public final class Constants {
    
 // Controllers
 public static final int DriverController = 0;
-public static final int MulipulatorController = 1;
+public static final int ManipulatorController = 1;
 
 // Motors
 public static final int intakeTopID = 13;
 public static final int intakeBottomID = 14;
 public static final int shooterTopID = 17;
 public static final int shooterBottomID = 18;
+public static final int feedID = 19;
+public static final int elevatorID = 20;
 public static final int AimID = 22;
 
 // Encoder

@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Aim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Feed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -27,6 +29,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController DriverController = new CommandXboxController(0); // My DriverController
+  private final CommandXboxController ManipulatorController = new CommandXboxController(1);
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
 
@@ -44,6 +47,8 @@ public class RobotContainer {
     Aim aim = new Aim();
     Shooter shooter = new Shooter();
     Intake intake = new Intake();
+    Elevator elevator = new Elevator();
+    Feed feed = new Feed();
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
@@ -63,29 +68,36 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    DriverController.leftTrigger().whileTrue(aim.runEnd(
+    ManipulatorController.leftTrigger().whileTrue(aim.runEnd(
       () -> shooter.shoot(.6),
       () -> shooter.shootStop()));
 
-    DriverController.leftBumper().whileTrue(intake.runEnd(
-      () -> intake.intakeFront(),
-      () -> intake.intakeStop()));
-
     DriverController.rightBumper().whileTrue(intake.runEnd(
       () -> intake.intakeBack(),
-      () -> intake.intakeStop()));
+      () -> intake.intakeStop())
+      .alongWith(feed.runEnd(
+      () -> feed.feed(),
+      () -> feed.feedStop())));
 
-    DriverController.a().whileTrue(aim.runOnce(
+    DriverController.y().whileTrue(elevator.runEnd(
+      () -> elevator.elevatorOut(0.5),
+      () -> elevator.elevatorStop()));
+
+    DriverController.x().whileTrue(elevator.runEnd(
+      () -> elevator.elevatorIn(0.5),
+      () -> elevator.elevatorStop()));
+
+    ManipulatorController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));
 
-    DriverController.b().whileTrue(aim.runOnce(
+    ManipulatorController.b().whileTrue(aim.runOnce(
       () -> aim.setAimUnderStage()));
 
-    DriverController.y().whileTrue(aim.runEnd(
+    ManipulatorController.y().whileTrue(aim.runEnd(
       () -> aim.aimUp(.80),
       () -> aim.aimStop()));
 
-    DriverController.x().whileTrue(aim.runEnd(
+    ManipulatorController.x().whileTrue(aim.runEnd(
       () -> aim.aimDown(.80),
       () -> aim.aimStop()));
   }
