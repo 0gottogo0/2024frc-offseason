@@ -54,16 +54,11 @@ public class Aim extends SubsystemBase {
     double pid = aimController.calculate(getAimAngleDeg(), aimSetpoint);
     pid = MathUtil.clamp(MathUtil.applyDeadband(pid, 0.2), -1, 1);
     if (manualAim) {
-      // diable pid
+      // (> _ >)
     } else {
       aim.set(-pid);
     }
-
-    System.out.println(manualAim);
     System.out.println(pid);
-    System.out.println(aimSetpoint);
-    System.out.println(getAimAngleDeg());
-    System.out.println("============");
   }
 
   public void aimUp(double speedPercent) {

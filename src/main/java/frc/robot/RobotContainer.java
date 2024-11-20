@@ -68,15 +68,19 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    ManipulatorController.leftTrigger().whileTrue(aim.runEnd(
+    ManipulatorController.leftTrigger().whileTrue(shooter.runEnd(
       () -> shooter.shoot(.6),
       () -> shooter.shootStop()));
+
+    ManipulatorController.rightTrigger().whileTrue(feed.runEnd(
+      () -> feed.feed(),
+      () -> feed.feedStop()));
 
     DriverController.rightBumper().whileTrue(intake.runEnd(
       () -> intake.intakeBack(),
       () -> intake.intakeStop())
       .alongWith(feed.runEnd(
-      () -> feed.feed(),
+      () -> feed.feedBreak(),
       () -> feed.feedStop())));
 
     DriverController.y().whileTrue(elevator.runEnd(
