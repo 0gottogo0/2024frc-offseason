@@ -18,6 +18,8 @@ public class Feed extends SubsystemBase {
 
   private DigitalInput beamBreak = new DigitalInput(0);
 
+  private Timer feedTimer = new Timer();
+
   private TalonSRX feed = new TalonSRX(Constants.feedID);
 
   /** Creates a new Feed. */
@@ -26,6 +28,8 @@ public class Feed extends SubsystemBase {
     feed.setInverted(false);
     feed.setNeutralMode(NeutralMode.Brake);
     feed.clearStickyFaults();
+
+    feedTimer.reset();
   }
 
   @Override
@@ -35,9 +39,12 @@ public class Feed extends SubsystemBase {
 
   public void feedBreak() {
     if (!beamBreak.get()) {
+      feedTimer.start();
+      feed.set(TalonSRXControlMode.PercentOutput, 0.0);
+    } else if (feedTimer.get() < 1.00 && feedTimer.get() > 0.00) {
       feed.set(TalonSRXControlMode.PercentOutput, 0.0);
     } else {
-      feed.set(TalonSRXControlMode.PercentOutput, 0.8);
+      feed.set(TalonSRXControlMode.PercentOutput, 0.6);
     }
   }
 
@@ -46,6 +53,8 @@ public class Feed extends SubsystemBase {
   }
 
   public void feedStop() {
+    feedTimer.stop();
+    feedTimer.reset();
     feed.set(TalonSRXControlMode.PercentOutput, 0.0);
   }
 

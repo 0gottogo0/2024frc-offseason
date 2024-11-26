@@ -7,13 +7,16 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Aim;
@@ -42,13 +45,40 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
   
-  private void configureBindings() {
+  public final Aim aim = new Aim();
+  public final Shooter shooter = new Shooter();
+  public final Intake intake = new Intake();
+  public final Elevator elevator = new Elevator();
+  public final Feed feed = new Feed();
 
-    Aim aim = new Aim();
-    Shooter shooter = new Shooter();
-    Intake intake = new Intake();
-    Elevator elevator = new Elevator();
-    Feed feed = new Feed();
+  private final SendableChooser<Command> autoChooser;
+  
+  public RobotContainer() {
+
+    NamedCommands.registerCommand("Shooter", shooter.runEnd(
+      () -> shooter.shoot(.6),
+      () -> shooter.shootStop()));
+
+    NamedCommands.registerCommand("Feed W/ Beam Break", feed.runEnd(
+      () -> feed.feedBreak(),
+      () -> feed.feedStop()));
+
+    NamedCommands.registerCommand("Feed", feed.runEnd(
+      () -> feed.feed(),
+      () -> feed.feedStop()));
+
+    NamedCommands.registerCommand("Intake", intake.runEnd(
+      () -> intake.intakeBack(),
+      () -> intake.intakeStop()));
+
+    autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    configureBindings();
+  }
+
+  private void configureBindings() {
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
@@ -83,41 +113,30 @@ public class RobotContainer {
       () -> feed.feedBreak(),
       () -> feed.feedStop())));
 
-    DriverController.y().whileTrue(elevator.runEnd(
+    ManipulatorController.y().whileTrue(elevator.runEnd(
       () -> elevator.elevatorOut(0.5),
       () -> elevator.elevatorStop()));
 
-    DriverController.x().whileTrue(elevator.runEnd(
+    ManipulatorController.x().whileTrue(elevator.runEnd(
       () -> elevator.elevatorIn(0.5),
       () -> elevator.elevatorStop()));
 
-    ManipulatorController.a().whileTrue(aim.runOnce(
+    DriverController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));
 
-    ManipulatorController.b().whileTrue(aim.runOnce(
+    DriverController.b().whileTrue(aim.runOnce(
       () -> aim.setAimUnderStage()));
 
-    ManipulatorController.y().whileTrue(aim.runEnd(
+    ManipulatorController.a().whileTrue(aim.runEnd(
       () -> aim.aimUp(.80),
       () -> aim.aimStop()));
 
-    ManipulatorController.x().whileTrue(aim.runEnd(
+    ManipulatorController.b().whileTrue(aim.runEnd(
       () -> aim.aimDown(.80),
       () -> aim.aimStop()));
   }
- 
-  /*
-  Idk ill fix this
-
-  aim.setDefaultCommand(aim.run(
-    () -> aim.setAimJoystick((manipulatorController.getLeftY()))));
-  */
-
-  public RobotContainer() {
-    configureBindings();
-  }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
