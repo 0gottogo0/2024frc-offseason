@@ -5,11 +5,11 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -83,7 +83,7 @@ public class TunerConstants {
     private static final double kDriveFrictionVoltage = 0.25;
 
     private static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
-            .withCANbusName(kCANbusName)
+            .withCANBusName(kCANbusName)
             .withPigeon2Id(kPigeonId)
             .withPigeon2Configs(pigeonConfigs);
 
@@ -96,7 +96,7 @@ public class TunerConstants {
             .withDriveMotorGains(driveGains)
             .withSteerMotorClosedLoopOutput(steerClosedLoopOutput)
             .withDriveMotorClosedLoopOutput(driveClosedLoopOutput)
-            .withSpeedAt12VoltsMps(kSpeedAt12VoltsMps)
+            .withSpeedAt12Volts(kSpeedAt12VoltsMps)
             .withSteerInertia(kSteerInertia)
             .withDriveInertia(kDriveInertia)
             .withSteerFrictionVoltage(kSteerFrictionVoltage)
@@ -114,6 +114,7 @@ public class TunerConstants {
     private static final int kFrontLeftEncoderId = 3;
     private static final double kFrontLeftEncoderOffset = 0.26416015625;
     private static final boolean kFrontLeftSteerInvert = false;
+    private static final boolean kFrontLeftCANcoderInverted = false;
 
     private static final double kFrontLeftXPosInches = 11.5;
     private static final double kFrontLeftYPosInches = 11.25;
@@ -124,6 +125,7 @@ public class TunerConstants {
     private static final int kFrontRightEncoderId = 6;
     private static final double kFrontRightEncoderOffset = 0.326904296875;
     private static final boolean kFrontRightSteerInvert = false;
+    private static final boolean kFrontRightCANcoderInverted = false;
 
     private static final double kFrontRightXPosInches = 11.5;
     private static final double kFrontRightYPosInches = -11.25;
@@ -134,6 +136,7 @@ public class TunerConstants {
     private static final int kBackLeftEncoderId = 9;
     private static final double kBackLeftEncoderOffset = 0.259521484375;
     private static final boolean kBackLeftSteerInvert = false;
+    private static final boolean kBackLeftCANcoderInverted = false;
 
     private static final double kBackLeftXPosInches = -11.5;
     private static final double kBackLeftYPosInches = 11.25;
@@ -144,23 +147,32 @@ public class TunerConstants {
     private static final int kBackRightEncoderId = 12;
     private static final double kBackRightEncoderOffset = 0.2822265625;
     private static final boolean kBackRightSteerInvert = false;
+    private static final boolean kBackRightCANcoderInverted = false;
 
     private static final double kBackRightXPosInches = -11.5;
     private static final double kBackRightYPosInches = -11.25;
 
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
-            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide)
-            .withSteerMotorInverted(kFrontLeftSteerInvert);
+            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, 
+            Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), 
+            kInvertLeftSide, kFrontLeftSteerInvert
+            );
     private static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
-            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), kInvertRightSide)
-            .withSteerMotorInverted(kFrontRightSteerInvert);
+            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, 
+            Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), 
+            kInvertRightSide, kFrontRightSteerInvert
+            );
     private static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
-            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), kInvertLeftSide)
-            .withSteerMotorInverted(kBackLeftSteerInvert);
+            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, 
+            Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), 
+            kInvertLeftSide, kBackLeftSteerInvert
+            );
     private static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
-            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide)
-            .withSteerMotorInverted(kBackRightSteerInvert);
+            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, 
+            Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), 
+            kInvertRightSide, kBackRightSteerInvert
+            );
 
     public static final CommandSwerveDrivetrain DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);
