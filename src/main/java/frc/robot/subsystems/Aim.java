@@ -77,7 +77,7 @@ public class Aim extends SubsystemBase {
   }
 
   public double getAimAngleDeg() {
-    return Units.rotationsToDegrees(-aimEncoder.getAbsolutePosition())+308; // Set 0 to horozon
+    return Units.rotationsToDegrees(-aimEncoder.get()*360)+308; // Set 0 to horozon
   }
 
   // Fine tune setpoints

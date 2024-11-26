@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -27,8 +29,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-  private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 3 * Math.PI; // Tune
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // Tune
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController DriverController = new CommandXboxController(0); // My DriverController
@@ -82,10 +84,9 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-        drive.withVelocityX(
-          MathUtil.applyDeadband(-DriverController.getLeftY(), 0.15) * MaxSpeed) // Drive forward with negative Y (forward)
-             .withVelocityY(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.15) * MaxSpeed) // Drive left with negative X (left)
-             .withRotationalRate(-DriverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            drive.withVelocityX(MathUtil.applyDeadband(-DriverController.getLeftY(), 0.15) * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.15) * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(-DriverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
     DriverController.button(8).whileTrue(drivetrain.applyRequest(() -> brake));
@@ -96,6 +97,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       drivetrain.seedFieldCentric();
     }
+    
     drivetrain.registerTelemetry(logger::telemeterize);
 
     ManipulatorController.leftTrigger().whileTrue(shooter.runEnd(
