@@ -55,6 +55,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+    public enum Test {
+        Translation,
+        Steer,
+        Rotation
+    }
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -114,8 +120,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         )
     );
 
-    /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -232,8 +237,23 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      * @param direction Direction of the SysId Quasistatic test
      * @return Command to run
      */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction, Test test) {
+        switch (test) {
+            case Translation:
+                return m_sysIdRoutineTranslation.quasistatic(direction);
+                
+
+            case Rotation:
+                return m_sysIdRoutineRotation.quasistatic(direction);
+                
+
+            case Steer:
+                return m_sysIdRoutineSteer.quasistatic(direction);
+        
+            default:
+                return m_sysIdRoutineTranslation.quasistatic(direction);
+                
+        }
     }
 
     /**
@@ -243,8 +263,23 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      * @param direction Direction of the SysId Dynamic test
      * @return Command to run
      */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
+    public Command sysIdDynamic(SysIdRoutine.Direction direction, Test test) {
+        switch (test) {
+            case Translation:
+                return m_sysIdRoutineTranslation.dynamic(direction);
+                
+
+            case Rotation:
+                return m_sysIdRoutineRotation.dynamic(direction);
+                
+
+            case Steer:
+                return m_sysIdRoutineSteer.dynamic(direction);
+        
+            default:
+                return m_sysIdRoutineTranslation.dynamic(direction);
+                
+        }
     }
 
     @Override
