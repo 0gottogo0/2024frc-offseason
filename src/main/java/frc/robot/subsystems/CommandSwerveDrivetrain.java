@@ -186,7 +186,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         try {
             // Remember to Update in GUI too
             RobotConfig config = new RobotConfig(Pounds.of(124.5), KilogramSquareMeters.of(91179.336),
-             new ModuleConfig(Inches.of(1.875), MetersPerSecond.of(5), 0.7, DCMotor.getKrakenX60(1).withReduction(6.12), Amps.of(20), 1), 
+             new ModuleConfig(Inches.of(1.875), MetersPerSecond.of(5.3), 0.7, DCMotor.getKrakenX60(1).withReduction(6.12), Amps.of(20), 1), 
              Inches.of(11.5*2), Inches.of(11.25*2));
              //RobotConfig config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
