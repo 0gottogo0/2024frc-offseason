@@ -105,7 +105,7 @@ public class TunerConstants {
             .withDriveMotorGearRatio(kDriveGearRatio)
             .withSteerMotorGearRatio(kSteerGearRatio)
             .withCouplingGearRatio(kCoupleRatio)
-            .withWheelRadius(kWheelRadiusInches)
+            .withWheelRadius(kWheelRadius)
             .withSlipCurrent(kSlipCurrent)
             .withSteerMotorGains(steerGains)
             .withDriveMotorGains(driveGains)
