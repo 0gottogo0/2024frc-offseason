@@ -30,7 +30,7 @@ import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // Tune
+  private double MaxAngularRate = RotationsPerSecond.of(.75).in(RadiansPerSecond); // Tune
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController DriverController = new CommandXboxController(0); // My DriverController
@@ -45,7 +45,7 @@ public class RobotContainer {
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  //private final Telemetry logger = new Telemetry(MaxSpeed);
   
   public final Aim aim = new Aim();
   public final Shooter shooter = new Shooter();
@@ -84,8 +84,8 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-            drive.withVelocityX(MathUtil.applyDeadband(-DriverController.getLeftY(), 0.15) * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.15) * MaxSpeed) // Drive left with negative X (left)
+            drive.withVelocityX(-DriverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(-DriverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .withRotationalRate(-DriverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
@@ -98,7 +98,7 @@ public class RobotContainer {
       drivetrain.seedFieldCentric();
     }
     
-    drivetrain.registerTelemetry(logger::telemeterize);
+    //drivetrain.registerTelemetry(logger::telemeterize);
 
     ManipulatorController.leftTrigger().whileTrue(shooter.runEnd(
       () -> shooter.shoot(.6),

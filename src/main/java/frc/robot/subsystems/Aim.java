@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -58,7 +59,10 @@ public class Aim extends SubsystemBase {
     } else {
       aim.set(-pid);
     }
-    System.out.println(pid);
+    SmartDashboard.putNumber("Aim PID input", pid);
+    SmartDashboard.putNumber("current encoder posistion", getAimAngleDeg());
+    SmartDashboard.putNumber("Aim Target", aimSetpoint);
+    //System.out.println(pid);
   }
 
   public void aimUp(double speedPercent) {
@@ -77,7 +81,7 @@ public class Aim extends SubsystemBase {
   }
 
   public double getAimAngleDeg() {
-    return Units.rotationsToDegrees(-aimEncoder.get()*360)+308; // Set 0 to horozon
+    return Units.rotationsToDegrees(-aimEncoder.get())+308; // Set 0 to horozon
   }
 
   // Fine tune setpoints
