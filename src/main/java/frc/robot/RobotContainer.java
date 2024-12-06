@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Aim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -27,10 +29,15 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Feed;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.CommandSwerveDrivetrain.Test;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(.75).in(RadiansPerSecond); // Tune
+
+  private SlewRateLimiter xLimiter = new SlewRateLimiter(18.0);//TODO: adjust these
+  private SlewRateLimiter yLimiter = new SlewRateLimiter(18.0); //limit rate of change of joystick inputs
+  private SlewRateLimiter rotLimiter = new SlewRateLimiter(35.0); //reduce brownouts
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController DriverController = new CommandXboxController(0); // My DriverController
@@ -45,7 +52,7 @@ public class RobotContainer {
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
-  //private final Telemetry logger = new Telemetry(MaxSpeed);
+  //private final Telemetry logger = new Telemetry(MaxSpeed); //uncomment for sysid
   
   public final Aim aim = new Aim();
   public final Shooter shooter = new Shooter();
@@ -82,11 +89,34 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    //sysid tests
+
+    /*DriverController.x().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward, Test.Translation));
+    DriverController.x().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse, Test.Translation));
+
+    DriverController.y().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdDynamic(Direction.kForward, Test.Translation));
+    DriverController.y().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse, Test.Translation));
+
+    DriverController.a().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward, Test.Rotation));
+    DriverController.a().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse, Test.Rotation));
+
+    DriverController.b().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdDynamic(Direction.kForward, Test.Rotation));
+    DriverController.b().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse, Test.Rotation));
+
+    DriverController.rightBumper().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward, Test.Steer));
+    DriverController.rightBumper().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse, Test.Steer));
+
+    DriverController.leftBumper().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdDynamic(Direction.kForward, Test.Steer));
+    DriverController.leftBumper().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse, Test.Steer));*/
+    
+
+    //drivetrain.registerTelemetry(logger::telemeterize); //uncomment for sysid
+
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() ->
-            drive.withVelocityX(-DriverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(-DriverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-DriverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            drive.withVelocityX(xLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftY(), 0.02) * MaxSpeed)) // Drive forward with negative Y (forward)
+                .withVelocityY(yLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.02) * MaxSpeed)) // Drive left with negative X (left)
+                .withRotationalRate(rotLimiter.calculate(MathUtil.applyDeadband(-DriverController.getRightX(), 0.02) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
         ));
 
     DriverController.button(8).whileTrue(drivetrain.applyRequest(() -> brake));
@@ -98,7 +128,7 @@ public class RobotContainer {
       drivetrain.seedFieldCentric();
     }
     
-    //drivetrain.registerTelemetry(logger::telemeterize);
+   
 
     ManipulatorController.leftTrigger().whileTrue(shooter.runEnd(
       () -> shooter.shoot(.6),
