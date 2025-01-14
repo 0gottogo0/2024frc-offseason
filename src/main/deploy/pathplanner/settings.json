@@ -2,8 +2,14 @@
   "robotWidth": 0.762,
   "robotLength": 0.762,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "Front Notes",
+    "Back Notes"
+  ],
+  "autoFolders": [
+    "Front",
+    "Hybrid"
+  ],
   "defaultMaxVel": 5.3,
   "defaultMaxAccel": 3.5,
   "defaultMaxAngVel": 500.0,

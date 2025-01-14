@@ -26,4 +26,7 @@ public static final int AimID = 22;
 // Encoder
 public static final int AimEncoder = 25;
 public static final int revEncoderDIOPort = 1;
+
+// CANdle
+public static final int candleID = 26;
 }

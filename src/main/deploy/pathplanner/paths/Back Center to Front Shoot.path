@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 5.539225686154654
+        "x": 8.281967377053787,
+        "y": 4.0987927910263835
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9999999999999998,
-        "y": 5.539225686154654
+        "x": 6.209149308455535,
+        "y": 4.0285277717488395
+      },
+      "isLocked": false,
+      "linkedName": "Back Center"
+    },
+    {
+      "anchor": {
+        "x": 4.780427249870191,
+        "y": 4.42669621430541
+      },
+      "prevControl": {
+        "x": 6.002708694657647,
+        "y": 3.5752192527680804
+      },
+      "nextControl": {
+        "x": 3.738162797295636,
+        "y": 5.152768080143863
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 5.539225686154654
+        "x": 3.1643318065523425,
+        "y": 5.457249830334182
       },
       "prevControl": {
-        "x": 3.75,
-        "y": 5.539225686154654
+        "x": 4.557921355500344,
+        "y": 5.562647359246217
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle Shoot"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -177.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Back Notes",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -170.0
   },
   "useDefaultConstraints": true
 }
