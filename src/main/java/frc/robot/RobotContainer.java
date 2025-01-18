@@ -78,7 +78,6 @@ public class RobotContainer {
   
   public RobotContainer() {
 
-    /*
     autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -104,7 +103,7 @@ public class RobotContainer {
       () -> driveTrack.withVelocityX(camera.moveInputY() + xLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftY(), .1) * MaxSpeed)) // Drive forward with negative Y (forward)
                       .withVelocityY(yLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
                       .withRotationalRate(camera.moveInputX() + rotLimiter.calculate(-MathUtil.applyDeadband(DriverController.getRightX(), .1) * MaxAngularRate))));
-    */
+
     configureBindings();
   }
 
@@ -140,11 +139,6 @@ public class RobotContainer {
                      .withRotationalRate(rotLimiter.calculate(MathUtil.applyDeadband(-DriverController.getRightX(), 0.02) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
         ));
      
-    m_chooser.setDefaultOption("TEST: DRIVE", autoTestDrive);
-    m_chooser.addOption("TEST: DRIVE2", autoTestDrive);
-
-    Shuffleboard.getTab("Auto Chooser").add(m_chooser);
-
     DriverController.button(8).whileTrue(drivetrain.applyRequest(() -> brake));
     
     // reset the field-centric heading on left bumper press
@@ -181,19 +175,13 @@ public class RobotContainer {
     ManipulatorController.x().whileTrue(elevator.runEnd(
       () -> elevator.elevatorIn(0.5),
       () -> elevator.elevatorStop()));
-    /*
+    
     DriverController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));
 
     DriverController.b().whileTrue(aim.runOnce(
       () -> aim.setAimUnderStage()));
-    */
-
-    DriverController.b().whileTrue(drivetrain.applyRequest(
-      () -> driveTrack.withVelocityX(0.5 * MaxSpeed) // Drive forward with negative Y (forward)
-                      .withVelocityY(0 * MaxSpeed) // Drive left with negative X (left)
-                      .withRotationalRate(0 * MaxAngularRate)));
-
+    
     DriverController.x().whileTrue(candle.runOnce(
       () -> candle.setBlue()));
 
