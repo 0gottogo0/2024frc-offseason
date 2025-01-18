@@ -55,9 +55,9 @@ public class Aim extends SubsystemBase {
     double pid = aimController.calculate(getAimAngleDeg(), aimSetpoint);
     pid = MathUtil.clamp(MathUtil.applyDeadband(pid, 0.2), -1, 1);
     if (manualAim) {
-      // (> _ >)
+      // (> - >)
     } else {
-      aim.set(-pid);
+      // aim.set(-pid);
     }
     SmartDashboard.putNumber("Aim PID input", pid);
     SmartDashboard.putNumber("current encoder posistion", getAimAngleDeg());
@@ -86,10 +86,10 @@ public class Aim extends SubsystemBase {
 
   // Fine tune setpoints
   public void setAimUnderStage() {
-    aimSetpoint = 40;
+    // aimSetpoint = 40;
   }
 
   public void setAimAtSpeaker() {
-    aimSetpoint = 60;
+    // aimSetpoint = 60;
   }
 }

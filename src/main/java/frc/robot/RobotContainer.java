@@ -52,7 +52,7 @@ public class RobotContainer {
                                                                // driving in open loop
 
   private final SwerveRequest.RobotCentric driveTrack = new SwerveRequest.RobotCentric()
-      .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
+      .withDeadband(MaxSpeed * 0.02).withRotationalDeadband(MaxAngularRate * 0.02) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
 
@@ -72,6 +72,11 @@ public class RobotContainer {
   
   public RobotContainer() {
 
+    autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
     NamedCommands.registerCommand("Shooter", shooter.runEnd(
       () -> shooter.shoot(.6),
       () -> shooter.shootStop()));
@@ -88,9 +93,10 @@ public class RobotContainer {
       () -> intake.intakeBack(),
       () -> intake.intakeStop()));
 
-    autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    NamedCommands.registerCommand("Track", drivetrain.applyRequest(
+      () -> driveTrack.withVelocityX(camera.moveInputY() + xLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftY(), .1) * MaxSpeed)) // Drive forward with negative Y (forward)
+                      .withVelocityY(yLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
+                      .withRotationalRate(camera.moveInputX() + rotLimiter.calculate(-MathUtil.applyDeadband(DriverController.getRightX(), .1) * MaxAngularRate))));
 
     configureBindings();
   }
@@ -104,7 +110,7 @@ public class RobotContainer {
 
     DriverController.y().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdDynamic(Direction.kForward, Test.Translation));
     DriverController.y().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse, Test.Translation));
-
+    
     DriverController.a().and(DriverController.pov(0)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward, Test.Rotation));
     DriverController.a().and(DriverController.pov(180)).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse, Test.Rotation));
 
@@ -119,28 +125,27 @@ public class RobotContainer {
     */
 
     //drivetrain.registerTelemetry(logger::telemeterize); //uncomment for sysid
-
+    
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() ->
-            drive.withVelocityX(xLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftY(), 0.02) * MaxSpeed)) // Drive forward with negative Y (forward)
-                 .withVelocityY(yLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.02) * MaxSpeed)) // Drive left with negative X (left)
-                 .withRotationalRate(rotLimiter.calculate(MathUtil.applyDeadband(-DriverController.getRightX(), 0.02) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+        drivetrain.applyRequest(
+          () -> drive.withVelocityX(xLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftY(), 0.02) * MaxSpeed)) // Drive forward with negative Y (forward)
+                     .withVelocityY(yLimiter.calculate(MathUtil.applyDeadband(-DriverController.getLeftX(), 0.02) * MaxSpeed)) // Drive left with negative X (left)
+                     .withRotationalRate(rotLimiter.calculate(MathUtil.applyDeadband(-DriverController.getRightX(), 0.02) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
         ));
-
+     
     DriverController.button(8).whileTrue(drivetrain.applyRequest(() -> brake));
-
+    
     // reset the field-centric heading on left bumper press
-    DriverController.button(7).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+    //DriverController.button(7).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    
     if (Utils.isSimulation()) {
       drivetrain.seedFieldCentric();
     }
     
-    DriverController.a().whileTrue(
-      drivetrain.applyRequest(
-        () -> driveTrack.withVelocityX(camera.moveInputY() + xLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftY(), .1) * MaxSpeed)) // Drive forward with negative Y (forward)
-                        .withVelocityY(yLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
-                        .withRotationalRate(camera.moveInputX() + rotLimiter.calculate(-MathUtil.applyDeadband(DriverController.getRightX(), .1) * MaxAngularRate))));
+    DriverController.a().whileTrue(drivetrain.applyRequest(
+      () -> driveTrack.withVelocityX(camera.moveInputY() + xLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftY(), .1) * MaxSpeed)) // Drive forward with negative Y (forward)
+                      .withVelocityY(yLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
+                      .withRotationalRate(camera.moveInputX() + rotLimiter.calculate(-MathUtil.applyDeadband(DriverController.getRightX(), .1) * MaxAngularRate))));
 
     ManipulatorController.leftTrigger().whileTrue(shooter.runEnd(
       () -> shooter.shoot(.6),
@@ -164,15 +169,13 @@ public class RobotContainer {
     ManipulatorController.x().whileTrue(elevator.runEnd(
       () -> elevator.elevatorIn(0.5),
       () -> elevator.elevatorStop()));
-
-    /* DriverController.a().whileTrue(aim.runOnce(
+    
+    DriverController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));
-    */
 
-    /* DriverController.b().whileTrue(aim.runOnce(
+    DriverController.b().whileTrue(aim.runOnce(
       () -> aim.setAimUnderStage()));
-    */
-
+    
     DriverController.x().whileTrue(candle.runOnce(
       () -> candle.setBlue()));
 
@@ -186,6 +189,7 @@ public class RobotContainer {
     ManipulatorController.b().whileTrue(aim.runEnd(
       () -> aim.aimDown(.80),
       () -> aim.aimStop()));
+      
   }
 
   public Command getAutonomousCommand() {

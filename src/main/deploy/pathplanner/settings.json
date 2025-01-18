@@ -3,12 +3,11 @@
   "robotLength": 0.762,
   "holonomicMode": true,
   "pathFolders": [
-    "Front Notes",
-    "Back Notes"
+    "Center",
+    "Right"
   ],
   "autoFolders": [
-    "Front",
-    "Hybrid"
+    "Right"
   ],
   "defaultMaxVel": 5.3,
   "defaultMaxAccel": 3.5,

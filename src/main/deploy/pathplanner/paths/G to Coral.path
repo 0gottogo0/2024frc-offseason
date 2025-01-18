@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.281967377053787,
-        "y": 4.0987927910263835
+        "x": 6.077766393442623,
+        "y": 3.7193135245901634
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.209149308455535,
-        "y": 4.0285277717488395
+        "x": 7.077766393442623,
+        "y": 3.7193135245901634
       },
       "isLocked": false,
-      "linkedName": "Back Center"
+      "linkedName": "G"
     },
     {
       "anchor": {
-        "x": 4.780427249870191,
-        "y": 4.42669621430541
+        "x": 3.6202868852459016,
+        "y": 2.076997950819672
       },
       "prevControl": {
-        "x": 6.002708694657647,
-        "y": 3.5752192527680804
+        "x": 5.71813524590164,
+        "y": 1.4296618852459004
       },
       "nextControl": {
-        "x": 3.738162797295636,
-        "y": 5.152768080143863
+        "x": 2.167517691185334,
+        "y": 2.525281016415505
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1643318065523425,
-        "y": 5.457249830334182
+        "x": 1.1388319672131146,
+        "y": 0.938165983606558
       },
       "prevControl": {
-        "x": 4.557921355500344,
-        "y": 5.562647359246217
+        "x": 1.7861680327868852,
+        "y": 1.89718237704918
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Middle Shoot"
+      "linkedName": "Coral"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -177.0
+    "rotation": 53.7461622625552
   },
   "reversed": false,
-  "folder": "Back Notes",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -170.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

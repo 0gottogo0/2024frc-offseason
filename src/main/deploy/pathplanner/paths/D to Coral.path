@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1643318065523425,
-        "y": 5.457249830334182
+        "x": 3.9799180327868857,
+        "y": 2.868186475409835
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8292964403332506,
-        "y": 5.6212015419751244
+        "x": 2.9130122950819675,
+        "y": 1.1899077868852455
       },
       "isLocked": false,
-      "linkedName": "Middle Shoot"
+      "linkedName": "D"
     },
     {
       "anchor": {
-        "x": 2.7427416909042077,
-        "y": 4.133925300660873
+        "x": 1.1388319672131146,
+        "y": 0.938165983606558
       },
       "prevControl": {
-        "x": 1.6067905459634015,
-        "y": 4.473539560488536
+        "x": 2.2776639344262293,
+        "y": 2.8202356557377044
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Front Source"
+      "linkedName": "Coral"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 165.0
+    "rotation": 53.7461622625552
   },
   "reversed": false,
-  "folder": "Front Notes",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -177.0
+    "rotation": 59.93141717813759
   },
   "useDefaultConstraints": true
 }

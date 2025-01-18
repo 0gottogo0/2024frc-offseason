@@ -14,8 +14,8 @@ public class Camera extends SubsystemBase {
 
   public static boolean doRejectUpdate = true;
   public static final String limeLight = "limelight";
-  private static PIDController pidControllerX = new PIDController(0.1, 0., 0.0); // PID for Left, Right
-  private static PIDController pidControllerY = new PIDController(0.1, 0., 0.0); // PID for Forward, Backward
+  private static PIDController pidControllerX = new PIDController(0.2, 0., 0.0); // PID for Left, Right
+  private static PIDController pidControllerY = new PIDController(0.3, 0., 0.0); // PID for Forward, Backward
 
   /** Creates a new Camera. */
   public Camera() {}
