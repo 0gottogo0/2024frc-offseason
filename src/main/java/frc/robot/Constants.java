@@ -29,4 +29,7 @@ public static final int revEncoderDIOPort = 1;
 
 // CANdle
 public static final int candleID = 26;
+
+// Speeds
+public static final double autoSpeed = 0.3;
 }

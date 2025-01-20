@@ -18,30 +18,33 @@ public class Candle extends SubsystemBase {
 
   private CANdle candle = new CANdle(Constants.candleID);
   private Random random = new Random();
-
+  
   private CANdleConfiguration cfg = new CANdleConfiguration();
-
+  
   /** Creates a new Lights. */
   public Candle() {
     cfg.statusLedOffWhenActive = true;
     cfg.stripType = LEDStripType.GRB;
     cfg.disableWhenLOS = false;
-    
+      
     candle.configFactoryDefault();
     candle.clearStickyFaults();
     candle.configAllSettings(cfg);
   }
-
+  
   @Override
   public void periodic() {
   }
-
+  
   public void setBlue() {
     candle.setLEDs(0, 0, 255);
-    
   }
 
   public void setRed() {
     candle.setLEDs(255, 0, 0);
+  }
+
+  public void setRGB (int R, int G, int B) {
+    candle.setLEDs(R, G, B);
   }
 }

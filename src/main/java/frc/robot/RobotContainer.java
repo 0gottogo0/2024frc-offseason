@@ -9,8 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -68,10 +68,11 @@ public class RobotContainer {
   public final Candle candle = new Candle();
   public final Camera camera = new Camera();
 
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
 
+    /*
     autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -97,7 +98,7 @@ public class RobotContainer {
       () -> driveTrack.withVelocityX(camera.moveInputY() + xLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftY(), .1) * MaxSpeed)) // Drive forward with negative Y (forward)
                       .withVelocityY(yLimiter.calculate(-MathUtil.applyDeadband(DriverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
                       .withRotationalRate(camera.moveInputX() + rotLimiter.calculate(-MathUtil.applyDeadband(DriverController.getRightX(), .1) * MaxAngularRate))));
-
+    */
     configureBindings();
   }
 
@@ -193,6 +194,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return null;
   }
 }

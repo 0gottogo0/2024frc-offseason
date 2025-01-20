@@ -37,4 +37,12 @@ public class Camera extends SubsystemBase {
     double ty = LimelightHelpers.getTY(limeLight); // Get April Tag Y
     return pidControllerY.calculate(ty, 0);
   }
+
+  public double returnX() {
+    return LimelightHelpers.getTX(limeLight);
+  }
+
+  public double returnY() {
+    return LimelightHelpers.getTY(limeLight);
+  }
 }
