@@ -17,11 +17,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AutoTestDrive;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Aim;
 import frc.robot.subsystems.Camera;
@@ -57,6 +59,10 @@ public class RobotContainer {
                                                                // driving in open loop
 
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
+  private final Command autoTestDrive = new AutoTestDrive();
+
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   //private final Telemetry logger = new Telemetry(MaxSpeed); //uncomment for sysid
   
@@ -134,6 +140,11 @@ public class RobotContainer {
                      .withRotationalRate(rotLimiter.calculate(MathUtil.applyDeadband(-DriverController.getRightX(), 0.02) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
         ));
      
+    m_chooser.setDefaultOption("TEST: DRIVE", autoTestDrive);
+    m_chooser.addOption("TEST: DRIVE2", autoTestDrive);
+
+    Shuffleboard.getTab("Auto Chooser").add(m_chooser);
+
     DriverController.button(8).whileTrue(drivetrain.applyRequest(() -> brake));
     
     // reset the field-centric heading on left bumper press
@@ -170,13 +181,19 @@ public class RobotContainer {
     ManipulatorController.x().whileTrue(elevator.runEnd(
       () -> elevator.elevatorIn(0.5),
       () -> elevator.elevatorStop()));
-    
+    /*
     DriverController.a().whileTrue(aim.runOnce(
       () -> aim.setAimAtSpeaker()));
 
     DriverController.b().whileTrue(aim.runOnce(
       () -> aim.setAimUnderStage()));
-    
+    */
+
+    DriverController.b().whileTrue(drivetrain.applyRequest(
+      () -> driveTrack.withVelocityX(0.5 * MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityY(0 * MaxSpeed) // Drive left with negative X (left)
+                      .withRotationalRate(0 * MaxAngularRate)));
+
     DriverController.x().whileTrue(candle.runOnce(
       () -> candle.setBlue()));
 
@@ -195,6 +212,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
-    return null;
+    return m_chooser.getSelected();
   }
 }
